@@ -1,6 +1,20 @@
+"use client"
+
 import { ProfileView } from "@/components/profile-view"
+import {useEffect, useState} from "react";
+
 
 export default function ProfilePage() {
-    return <ProfileView />
+    const [token, setToken] = useState(undefined);
+    useEffect(() => {
+        const storageToken = localStorage.getItem("token");
+        if (storageToken) {
+            setToken(storageToken);
+        }
+    })
+
+    if (token) {
+        return <ProfileView token={token} />
+    }
 }
 

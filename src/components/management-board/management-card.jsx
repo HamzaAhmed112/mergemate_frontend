@@ -1,15 +1,15 @@
-import { useSortable } from '@dnd-kit/sortable'
-import { CSS } from '@dnd-kit/utilities'
-import { Card, CardContent } from '@/components/ui/card'
+import { useSortable } from "@dnd-kit/sortable"
+import { CSS } from "@dnd-kit/utilities"
+import { Card, CardContent } from "@/components/ui/card"
 
-export function Task({ id, content }) {
+export function ManagementCard({ task, isDragging }) {
     const {
         attributes,
         listeners,
         setNodeRef,
         transform,
         transition,
-    } = useSortable({ id })
+    } = useSortable({ id: task.id })
 
     const style = {
         transform: CSS.Transform.toString(transform),
@@ -22,10 +22,10 @@ export function Task({ id, content }) {
             style={style}
             {...attributes}
             {...listeners}
-            className="cursor-grab active:cursor-grabbing"
+            className={`cursor-grab ${isDragging ? "opacity-50" : ""}`}
         >
             <CardContent className="p-4">
-                <p>{content}</p>
+                <p>{task.task_title}</p>
             </CardContent>
         </Card>
     )

@@ -9,7 +9,7 @@ import Link from "next/link";
 
 
 
-export function ProjectCard({ title, difficulty, techStack, description, status }) {
+export function ProjectCard({ _id, title, difficulty, tech_stack, description }) {
 
     return (
         <Card className="max-w-2xl">
@@ -25,7 +25,7 @@ export function ProjectCard({ title, difficulty, techStack, description, status 
                     <div className="flex items-center gap-2">
                         <span className="font-semibold">Tech Stack:</span>
                         <div className="flex gap-2">
-                            {techStack.map((tech) => (
+                            {tech_stack.map((tech) => (
                                 <Badge key={tech} variant="outline">
                                     {tech}
                                 </Badge>
@@ -43,7 +43,9 @@ export function ProjectCard({ title, difficulty, techStack, description, status 
                     <button className="bg-green-600 text-white px-2 py-1 rounded mr-2">Manage Contributions</button>
                 </Link>
                 <button className="bg-green-600 text-white px-2 py-1 rounded mx-2">Manage Requests</button>
-                <button className="bg-green-600 text-white px-2 py-1 rounded mx-2">Manage Tasks</button>
+                <Link href={`/home/my-projects/manage-tasks/${_id}`}>
+                    <button className="bg-green-600 text-white px-2 py-1 rounded mx-2">Manage Tasks</button>
+                </Link>
             </CardFooter>
         </Card>
     );

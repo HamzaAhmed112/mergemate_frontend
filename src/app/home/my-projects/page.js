@@ -1,10 +1,27 @@
+"use client"
+
 import { MyProjects } from "@/components/My-Projects"
+import {useEffect, useState} from "react";
+import Loading from "@/components/loading";
 
 export default function MyProjectsPage() {
-    return (
-        <div className="container mx-auto p-6">
-            <MyProjects />
-        </div>
-    )
+    const [token, setToken] = useState(undefined);
+    useEffect(() => {
+        const storageToken = localStorage.getItem("token");
+        if (storageToken) {
+            setToken(storageToken);
+        }
+    })
+    if (token) {
+        return (
+            <div className="container mx-auto p-6">
+                <MyProjects token={token} />
+            </div>
+        )
+    } else {
+            return (
+                <Loading/>
+            )
+        }
 }
 

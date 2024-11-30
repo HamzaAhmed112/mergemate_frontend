@@ -1,21 +1,56 @@
-"use client"
+"use client";
 
-import { useState } from "react"
+import { useState } from "react";
 
 export function AddProjectDialog({ open, onOpenChange }) {
-    const [selectedTechStack, setSelectedTechStack] = useState([])
-    const [projectName, setProjectName] = useState("")
-    const [repository, setRepository] = useState("")
-    const [contributor, setDifficulty] = useState("")
-    const [comment, setDescription] = useState("")
+    const [selectedTechStack, setSelectedTechStack] = useState([]);
+    const [projectName, setProjectName] = useState("");
+    const [repository, setRepository] = useState("");
+    const [difficulty, setDifficulty] = useState("");
+    const [description, setDescription] = useState("");
 
     const handleTechStackChange = (tech) => {
         if (selectedTechStack.includes(tech)) {
-            setSelectedTechStack(selectedTechStack.filter((item) => item !== tech))
+            setSelectedTechStack(selectedTechStack.filter((item) => item !== tech));
         } else {
-            setSelectedTechStack([...selectedTechStack, tech])
+            setSelectedTechStack([...selectedTechStack, tech]);
         }
-    }
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+
+        const token = localStorage.getItem("token"); // Retrieve token for authorization
+        console.log(selectedTechStack)
+        const projectData = {
+            title: projectName,
+            repository,
+            difficulty: difficulty || "Easy",
+            tech_stack: selectedTechStack,
+            description: description || "None",
+        };
+
+        try {
+            const response = await fetch("http://localhost:3000/owner/create/project", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`, // Add authorization header
+                },
+                body: JSON.stringify(projectData),
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                console.log("Project created:", data);
+                onOpenChange(false); // Close dialog on success
+            } else {
+                console.error("Failed to create project:", await response.text());
+            }
+        } catch (error) {
+            console.error("Error creating project:", error);
+        }
+    };
 
     return (
         open && (
@@ -24,7 +59,7 @@ export function AddProjectDialog({ open, onOpenChange }) {
                     <h2 className="text-2xl font-semibold mb-4">Add New Project</h2>
                     <p className="text-gray-600 mb-6">Create a new project by filling out the details below.</p>
 
-                    <form>
+                    <form onSubmit={handleSubmit}>
                         <div className="mb-4">
                             <label htmlFor="project-name" className="block text-lg font-medium mb-2">
                                 Project Name
@@ -36,6 +71,7 @@ export function AddProjectDialog({ open, onOpenChange }) {
                                 value={projectName}
                                 onChange={(e) => setProjectName(e.target.value)}
                                 placeholder="Enter project name"
+                                required
                             />
                         </div>
 
@@ -48,6 +84,7 @@ export function AddProjectDialog({ open, onOpenChange }) {
                                 className="w-full p-2 border border-gray-300 rounded-md"
                                 value={repository}
                                 onChange={(e) => setRepository(e.target.value)}
+                                required
                             >
                                 <option value="">Select repository</option>
                                 <option value="repo1">Repository 1</option>
@@ -57,16 +94,16 @@ export function AddProjectDialog({ open, onOpenChange }) {
                         </div>
 
                         <div className="mb-4">
-                            <label htmlFor="contributor" className="block text-lg font-medium mb-2">
+                            <label htmlFor="difficulty" className="block text-lg font-medium mb-2">
                                 Difficulty
                             </label>
                             <select
-                                id="contributor"
+                                id="difficulty"
                                 className="w-full p-2 border border-gray-300 rounded-md"
-                                value={contributor}
+                                value={difficulty}
                                 onChange={(e) => setDifficulty(e.target.value)}
                             >
-                                <option value="">Select contributor</option>
+                                <option value="">Select difficulty</option>
                                 <option value="easy">Easy</option>
                                 <option value="medium">Medium</option>
                                 <option value="hard">Hard</option>
@@ -93,15 +130,15 @@ export function AddProjectDialog({ open, onOpenChange }) {
                         </div>
 
                         <div className="mb-4">
-                            <label htmlFor="comment" className="block text-lg font-medium mb-2">
+                            <label htmlFor="description" className="block text-lg font-medium mb-2">
                                 Description
                             </label>
                             <textarea
-                                id="comment"
+                                id="description"
                                 className="w-full p-2 border border-gray-300 rounded-md"
-                                value={comment}
+                                value={description}
                                 onChange={(e) => setDescription(e.target.value)}
-                                placeholder="Enter project comment"
+                                placeholder="Enter project description"
                             />
                         </div>
 
@@ -124,5 +161,5 @@ export function AddProjectDialog({ open, onOpenChange }) {
                 </div>
             </div>
         )
-    )
+    );
 }

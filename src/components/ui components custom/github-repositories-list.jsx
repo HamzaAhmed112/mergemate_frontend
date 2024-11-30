@@ -1,13 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 
-const repositories = [
-    { name: "awesome-project", description: "A really cool project", language: "JavaScript", stars: 120 },
-    { name: "data-viz-tool", description: "Data visualization library", language: "Python", stars: 89 },
-    { name: "mobile-app-template", description: "Template for React Native apps", language: "JavaScript", stars: 45 },
-]
-
-export function GitHubRepositories() {
+export function GitHubRepositories({ repositories }) {
     return (
         <Card>
             <CardHeader>
@@ -15,15 +9,14 @@ export function GitHubRepositories() {
             </CardHeader>
             <CardContent>
                 <ul className="space-y-4">
-                    {repositories.map((repo) => (
-                        <li key={repo.name} className="flex items-center justify-between">
+                    {repositories.map((repoName) => (
+                        <li key={repoName} className="flex items-center justify-between">
                             <div>
-                                <h3 className="font-semibold">{repo.name}</h3>
-                                <p className="text-sm text-muted-foreground">{repo.description}</p>
+                                <h3 className="font-semibold">{repoName}</h3>
                             </div>
                             <div className="flex items-center gap-2">
-                                <Badge variant="outline">{repo.language}</Badge>
-                                <span className="text-sm">⭐ {repo.stars}</span>
+                                <Badge variant="outline">JavaScript</Badge> {/* Assuming language */}
+                                <span className="text-sm">⭐ 0</span> {/* Placeholder for stars */}
                             </div>
                         </li>
                     ))}
@@ -32,4 +25,3 @@ export function GitHubRepositories() {
         </Card>
     )
 }
-

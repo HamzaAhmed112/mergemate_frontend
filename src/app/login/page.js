@@ -1,7 +1,11 @@
 import LoginForm from '@/components/LoginForm'
+import Cookies from "js-cookie";
 
 export default function LoginPage() {
+    const token = Cookies.get('auth_token')
+    if (token) {
 
+    }
     return (
         <div className="flex min-h-screen items-center justify-center bg-gray-100">
             <div className="w-full max-w-md">
