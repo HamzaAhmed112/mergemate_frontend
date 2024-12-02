@@ -1,6 +1,6 @@
 "use client"
 
-import { Home, Compass, GitFork, Folder, User, LogOut } from 'lucide-react' // Import LogOut icon
+import { Home, Compass, GitFork, Folder, User, LogOut, Bell } from 'lucide-react' // Import LogOut icon
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import {
     Sidebar,
@@ -16,6 +16,7 @@ const navigation = [
     { name: "Explore", href: "/home/explore", icon: Compass },
     { name: "My Contributions", href: "/home/my-contributions", icon: GitFork },
     { name: "My Projects", href: "/home/my-projects", icon: Folder },
+    { name: "Notifications", href: "/home/notifications", icon: Bell },
     { name: "Profile", href: "/home/profile", icon: User },
 ]
 
@@ -32,7 +33,7 @@ export function MainSidebar() {
             <SidebarHeader className="border-b p-4">
                 <div className="flex items-center gap-3">
                     <Avatar>
-                        <AvatarImage src="/image.png" />
+                        <AvatarImage src="/logo.png" />
                         <AvatarFallback>MM</AvatarFallback>
                     </Avatar>
                     <span className="font-semibold">MergeMate</span>

@@ -14,9 +14,9 @@ export function Explore({ token, projects }) {
     const [expandedTaskIndex, setExpandedTaskIndex] = useState(null);
     const [requestedTasks, setRequestedTasks] = useState({}); // Tracks requested tasks by their ID.
 
-    const requestCollaboration = async (token, projectID, taskID) => {
+    const requestCollaboration = async (token, projectID, taskID, username) => {
         try {
-            const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/user/requests/${projectID}/${taskID}`, {
+            const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/user/requests/${projectID}/${taskID}/${username}`, {
                 method: "POST",
                 headers: {
                     Authorization: `Bearer ${token}`,
@@ -57,9 +57,9 @@ export function Explore({ token, projects }) {
         setExpandedTaskIndex(expandedTaskIndex === index ? null : index);
     };
 
-    const handleRequestCollaboration = async (task) => {
+    const handleRequestCollaboration = async (task, username) => {
         const projectID = projects[currentIndex]._id;
-        const success = await requestCollaboration(token, projectID, task._id);
+        const success = await requestCollaboration(token, projectID, task._id, username);
         if (success) {
             setRequestedTasks((prev) => ({ ...prev, [task._id]: true })); // Mark task as requested.
         }
@@ -72,6 +72,7 @@ export function Explore({ token, projects }) {
 
     const currentProject = projects[currentIndex];
 
+    console.log(currentProject)
     return (
         <div className="flex flex-col items-center justify-start min-h-screen p-4">
             <h1 className="text-3xl font-bold mb-8">Explore Projects</h1>
@@ -167,7 +168,7 @@ export function Explore({ token, projects }) {
                                                 : "bg-green-600 hover:bg-green-700"
                                         }`}
                                         onClick={() =>
-                                            !requestedTasks[task._id] && !task.assigned && handleRequestCollaboration(task)
+                                            !requestedTasks[task._id] && !task.assigned && handleRequestCollaboration(task, currentProject.username)
                                         }
                                         disabled={requestedTasks[task._id] || task.assigned}
                                     >

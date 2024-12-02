@@ -28,6 +28,7 @@ export function ManageContributionsCard({ assignedTo, projectTitle, taskDescript
                 body: JSON.stringify({
                     projectID,
                     status: 2,
+                    forUsername: assignedTo
                 }),
             });
 
