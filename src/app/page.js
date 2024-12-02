@@ -226,6 +226,7 @@ export default function Page() {
             <footer className="border-t bg-gray-100">
                 <div className="border-t p-8 text-center text-gray-500">
                     <p>© 2024 MergeMate. All rights reserved.</p>
+                    <p>By StrawHat Coders/Devs.</p>
                 </div>
             </footer>
             {/*<footer className="border-t bg-gray-100">*/}
