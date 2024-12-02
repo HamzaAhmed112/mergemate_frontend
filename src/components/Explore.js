@@ -1,53 +1,75 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Check, X } from 'lucide-react'
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
+import { useState } from "react";
+import { Check, X, ChevronDown, ChevronUp } from "lucide-react";
+import { Card, CardContent, CardHeader, CardFooter, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 
-const projects = [
-    {
-        id: 1,
-        title: "AI-Powered Chat Application",
-        difficulty: "HARD",
-        techStack: ["Python", "TensorFlow", "React", "Node.js"],
-        description: "Develop a chat application that uses AI to understand and respond to user messages, providing intelligent and context-aware conversations.",
-    },
-    {
-        id: 2,
-        title: "Blockchain-based Voting System",
-        difficulty: "MEDIUM",
-        techStack: ["Solidity", "Ethereum", "JavaScript", "Web3.js"],
-        description: "Create a secure and transparent voting system using blockchain technology to ensure the integrity of election results.",
-    },
-    {
-        id: 3,
-        title: "Augmented Reality Shopping Experience",
-        difficulty: "HARD",
-        techStack: ["Unity", "C#", "ARKit", "ARCore"],
-        description: "Build an AR app that allows users to visualize products in their real environment before making a purchase decision.",
-    },
-]
+export function Explore({ token, projects }) {
+    const [currentIndex, setCurrentIndex] = useState(0);
+    const [isDialogOpen, setIsDialogOpen] = useState(false);
+    const [expandedTaskIndex, setExpandedTaskIndex] = useState(null);
+    const [requestedTasks, setRequestedTasks] = useState({}); // Tracks requested tasks by their ID.
 
-export function Explore() {
-    const [currentIndex, setCurrentIndex] = useState(0)
+    const requestCollaboration = async (token, projectID, taskID) => {
+        try {
+            const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/user/requests/${projectID}/${taskID}`, {
+                method: "POST",
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    "Content-Type": "application/json",
+                },
+            });
+
+            const data = await res.json();
+
+            if (res.ok && res.status === 200) {
+                return true;
+            } else {
+                alert(data.message || "Request failed");
+                return false;
+            }
+        } catch (error) {
+            console.error("Error fetching projects:", error);
+            alert("Server error when requesting collaboration");
+            return false;
+        }
+    };
 
     const handleAccept = () => {
-        console.log("Accepted project:", projects[currentIndex])
-        nextProject()
-    }
+        console.log("Accepted project:", projects[currentIndex]);
+        nextProject();
+    };
 
     const handleReject = () => {
-        console.log("Rejected project:", projects[currentIndex])
-        nextProject()
-    }
+        console.log("Rejected project:", projects[currentIndex]);
+        nextProject();
+    };
+
+    const handleViewTasks = () => {
+        setIsDialogOpen(true);
+    };
+
+    const toggleTaskExpansion = (index) => {
+        setExpandedTaskIndex(expandedTaskIndex === index ? null : index);
+    };
+
+    const handleRequestCollaboration = async (task) => {
+        const projectID = projects[currentIndex]._id;
+        const success = await requestCollaboration(token, projectID, task._id);
+        if (success) {
+            setRequestedTasks((prev) => ({ ...prev, [task._id]: true })); // Mark task as requested.
+        }
+    };
 
     const nextProject = () => {
-        setCurrentIndex((prevIndex) => (prevIndex + 1) % projects.length)
-    }
+        setCurrentIndex((prevIndex) => (prevIndex + 1) % projects.length);
+        setRequestedTasks({}); // Reset requested state when moving to a new project.
+    };
 
-    const currentProject = projects[currentIndex]
+    const currentProject = projects[currentIndex];
 
     return (
         <div className="flex flex-col items-center justify-start min-h-screen p-4">
@@ -56,7 +78,7 @@ export function Explore() {
                 <Button
                     variant="outline"
                     size="icon"
-                    className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-1/2 rounded-full z-10 bg-red-600 hover:bg-red-700 "
+                    className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-1/2 rounded-full z-10 bg-red-600 hover:bg-red-700"
                     onClick={handleReject}
                 >
                     <X className="h-4 w-4 text-white hover:text-white" />
@@ -74,7 +96,7 @@ export function Explore() {
                             <div className="flex items-center gap-2">
                                 <span className="font-semibold">Tech Stack:</span>
                                 <div className="flex flex-wrap gap-2">
-                                    {currentProject.techStack.map((tech) => (
+                                    {currentProject.tech_stack.map((tech) => (
                                         <Badge key={tech} variant="outline">
                                             {tech}
                                         </Badge>
@@ -87,6 +109,14 @@ export function Explore() {
                             <p className="text-muted-foreground">{currentProject.description}</p>
                         </div>
                     </CardContent>
+                    <CardFooter>
+                        <Button
+                            className="w-full bg-blue-600 hover:bg-blue-700 text-white"
+                            onClick={handleViewTasks}
+                        >
+                            View Tasks
+                        </Button>
+                    </CardFooter>
                 </Card>
                 <Button
                     variant="outline"
@@ -97,7 +127,73 @@ export function Explore() {
                     <Check className="h-4 w-4 text-white hover:text-white" />
                 </Button>
             </div>
-        </div>
-    )
-}
 
+            <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+                <DialogContent>
+                    <DialogHeader>
+                        <DialogTitle>Tasks for {currentProject.title}</DialogTitle>
+                    </DialogHeader>
+                    <div className="space-y-4">
+                        {currentProject.tasks.length > 0 ? (
+                            currentProject.tasks.map((task, index) => (
+                                    <div
+                                        key={task._id}
+                                        className="border p-4 rounded-lg shadow-sm"
+                                    >
+                                        <div className="flex justify-between items-center">
+                                            <span className="font-bold">{task.title}</span>
+                                            <Button
+                                                variant="ghost"
+                                                size="icon"
+                                                onClick={() => toggleTaskExpansion(index)}
+                                            >
+                                                {expandedTaskIndex === index ? (
+                                                    <ChevronUp className="h-5 w-5" />
+                                                ) : (
+                                                    <ChevronDown className="h-5 w-5" />
+                                                )}
+                                            </Button>
+                                        </div>
+                                        {expandedTaskIndex === index && (
+                                            <div className="mt-2 text-sm text-muted-foreground">
+                                                {task.description}
+                                            </div>
+                                        )}
+                                        <Button
+                                            className={`mt-2 text-white w-full ${
+                                                requestedTasks[task._id] || task.assigned
+                                                    ? "bg-gray-500 cursor-not-allowed"
+                                                    : "bg-green-600 hover:bg-green-700"
+                                            }`}
+                                            onClick={() =>
+                                                !requestedTasks[task._id] && !task.assigned && handleRequestCollaboration(task)
+                                            }
+                                            disabled={requestedTasks[task._id] || task.assigned}
+                                        >
+                                            {task.assigned
+                                                ? "Already Assigned"
+                                                : requestedTasks[task._id]
+                                                    ? "Requested"
+                                                    : "Request Collaboration"}
+                                        </Button>
+                                    </div>
+                                ))
+
+                        ) : (
+                            <p className="text-center text-muted-foreground">No tasks available</p>
+                        )}
+                    </div>
+                    <DialogFooter>
+                        <Button
+                            className="w-full"
+                            variant="outline"
+                            onClick={() => setIsDialogOpen(false)}
+                        >
+                            Close
+                        </Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
+        </div>
+    );
+}

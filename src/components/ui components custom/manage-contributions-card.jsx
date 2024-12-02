@@ -6,29 +6,82 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/componen
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 
-export function ManageContributionsCard({ title, contributor, datetime, comment }) {
+export function ManageContributionsCard({ assignedTo, projectTitle, taskDescription, taskID, projectID, token }) {
     const [isDialogOpen, setIsDialogOpen] = useState(false);
+    const [declineReason, setDeclineReason] = useState(""); // Track reason for decline
+
+    const handleApprove = async () => {
+        try {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/owner/tasks/${taskID}/status/approve-reject`, {
+                method: "PATCH",
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    projectID,
+                    status: 2, // Approved status
+                }),
+            });
+
+            const data = await response.json();
+            console.log(data)
+            if (response.ok) {
+                alert(data.message); // Notify success
+            } else {
+                alert(data.message); // Handle error
+            }
+        } catch (error) {
+            console.error(error);
+            alert("Error approving task");
+        }
+    };
+
+    const handleDecline = async () => {
+        if (!declineReason) {
+            alert("Please provide a reason for declining");
+            return;
+        }
+
+        try {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/owner/tasks/${taskID}/status/approve-reject`, {
+                method: "PATCH",
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    projectID,
+                    status: 3,
+                    reason: declineReason,
+                }),
+            });
+
+            const data = await response.json();
+            if (response.ok) {
+                alert(data.message); // Notify success
+            } else {
+                alert(data.message); // Handle error
+            }
+            setIsDialogOpen(false); // Close the dialog after submission
+        } catch (error) {
+            console.error(error);
+            alert("Error declining task");
+        }
+    };
 
     return (
         <>
             <Card className="max-w-2xl">
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-2xl font-bold">{title}</CardTitle>
+                    <CardTitle className="text-2xl font-bold">{projectTitle}</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
                     <div className="space-y-2">
                         <div className="flex items-center gap-2">
                             <span className="font-semibold">Contributor:</span>
-                            <Badge variant="secondary">{contributor}</Badge>
+                            <Badge variant="secondary">{assignedTo}</Badge>
                         </div>
-                        <div className="flex items-center gap-2">
-                            <span className="font-semibold">Datetime:</span>
-                            <div className="flex gap-2">{datetime}</div>
-                        </div>
-                    </div>
-                    <div className="space-y-2">
-                        <span className="font-semibold">Contributor Comment:</span>
-                        <p className="text-muted-foreground">{comment}</p>
                     </div>
                 </CardContent>
                 <CardFooter className="flex flex-row items-center justify-end">
@@ -38,7 +91,12 @@ export function ManageContributionsCard({ title, contributor, datetime, comment 
                     >
                         Decline
                     </button>
-                    <button className="bg-green-600 text-white px-2 py-1 rounded mx-2">Accept</button>
+                    <button
+                        className="bg-green-600 text-white px-2 py-1 rounded mx-2"
+                        onClick={handleApprove}
+                    >
+                        Accept
+                    </button>
                 </CardFooter>
             </Card>
 
@@ -52,6 +110,8 @@ export function ManageContributionsCard({ title, contributor, datetime, comment 
                             type="text"
                             placeholder="Enter reason for decline"
                             className="w-full px-3 py-2 border rounded-md"
+                            value={declineReason}
+                            onChange={(e) => setDeclineReason(e.target.value)} // Update state with reason
                         />
                     </div>
                     <DialogFooter>
@@ -62,7 +122,7 @@ export function ManageContributionsCard({ title, contributor, datetime, comment 
                         >
                             Cancel
                         </Button>
-                        <Button className="bg-green-500 text-white hover:bg-green-600">
+                        <Button className="bg-green-500 text-white hover:bg-green-600" onClick={handleDecline}>
                             Submit
                         </Button>
                     </DialogFooter>

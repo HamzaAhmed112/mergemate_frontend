@@ -31,7 +31,7 @@ export function AddProjectDialog({ open, onOpenChange }) {
         };
 
         try {
-            const response = await fetch("http://localhost:3000/owner/create/project", {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/owner/create/project`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

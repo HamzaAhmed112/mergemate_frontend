@@ -1,5 +1,5 @@
 "use client"
-import { useState } from "react"
+import {useEffect, useState} from "react"
 import { DndContext, DragOverlay, closestCorners, useSensor, useSensors, PointerSensor } from "@dnd-kit/core"
 import { ManagementColumn } from "./management-column"
 import { ManagementCard } from "./management-card"
@@ -7,7 +7,8 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter} from "@/components/ui/dialog"
 
-export function ManagementBoard({ projectId, token }) {
+export function ManagementBoard({ projectId, token, projectDetails }) {
+    console.log(projectDetails)
     const [tasks, setTasks] = useState({
         todo: [],
         "in-progress": [],
@@ -16,6 +17,45 @@ export function ManagementBoard({ projectId, token }) {
     const [activeId, setActiveId] = useState(null)
     const [isDialogOpen, setIsDialogOpen] = useState(false)
     const [newTask, setNewTask] = useState({ task_title: "", task_description: "" })
+
+    useEffect(() => {
+        if (projectDetails) {
+            const initializedTasks = projectDetails.tasks.reduce(
+                (acc, task) => {
+                    switch (task.status) {
+                        case 0: // TODO
+                            acc.todo.push({
+                                id: task._id,
+                                title: task.title,
+                                description: task.description,
+                            })
+                            break
+                        case 1: // In Progress
+                            acc["in-progress"].push({
+                                id: task._id,
+                                title: task.title,
+                                description: task.description,
+                            })
+                            break
+                        case 2: // Completed
+                            acc.completed.push({
+                                id: task._id,
+                                title: task.title,
+                                description: task.description,
+                            })
+                            break
+                        default:
+                            break
+                    }
+                    return acc
+                },
+                { todo: [], "in-progress": [], completed: [] } // Initial state
+            )
+
+            setTasks(initializedTasks)
+        }
+    }, [projectDetails])
+
 
     const sensors = useSensors(
         useSensor(PointerSensor, {
@@ -102,9 +142,7 @@ export function ManagementBoard({ projectId, token }) {
         if (!newTask.task_title.trim()) return
 
         try {
-            console.log("pr id")
-            console.log(projectId)
-            const res = await fetch(`http://localhost:3000/user/projects/${projectId}/tasks`, {
+            const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/user/projects/${projectId}/tasks`, {
                 method: 'POST',
                 headers: {
                     Authorization: `Bearer ${token}`,
@@ -119,6 +157,7 @@ export function ManagementBoard({ projectId, token }) {
             const data = await res.json()
 
             if (res.ok) {
+                console.log(data.task)
                 // Assuming the new task is returned from the backend, add it to the "todo" list
                 setTasks((prev) => ({
                     ...prev,
@@ -142,9 +181,9 @@ export function ManagementBoard({ projectId, token }) {
                 <DndContext
                     sensors={sensors}
                     collisionDetection={closestCorners}
-                    onDragStart={handleDragStart}
-                    onDragOver={handleDragOver}
-                    onDragEnd={handleDragEnd}
+                    // onDragStart={handleDragStart}
+                    // onDragOver={handleDragOver}
+                    // onDragEnd={handleDragEnd}
                 >
                     <div className="flex gap-4">
                         <ManagementColumn

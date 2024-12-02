@@ -14,7 +14,7 @@ export function MyProjects({token}) {
 
 
     async function getUserProjects(token) {
-        const res = await fetch(`http://localhost:3000/owner/get`, {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/owner/get`, {
             headers: {
                 Authorization: `Bearer ${token}`,
             },

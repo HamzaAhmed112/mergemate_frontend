@@ -12,7 +12,7 @@ export default function ProfilePage() {
             setToken(storageToken);
         }
     })
-
+    console.log(token);
     if (token) {
         return <ProfileView token={token} />
     }

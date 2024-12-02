@@ -19,15 +19,15 @@ const contributionsList = [
     }
 ]
 
-export function ManageContributions() {
+export function ManageContributions( {contributionCardData, token}) {
     return (
         <div className="space-y-4">
             <h1 className="text-2xl font-bold">Manage Contributions</h1>
             <Separator />
             <ScrollArea className="h-[calc(100vh-200px)] rounded-md border p-4">
                 <div className="space-y-4">
-                    {contributionsList.map((project, index) => (
-                        <ManageContributionsCard key={index} {...project} />
+                    {contributionCardData.map((project, index) => (
+                        <ManageContributionsCard key={index} {...project} token={token} />
                     ))}
                 </div>
             </ScrollArea>

@@ -11,6 +11,7 @@ const contributionsList = [
         difficulty: "HARD",
         techStack: ["JavaScript", "HTML", "CSS"],
         description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin aliquam, nisl a tempor interdum, sapien magna eleifend ex, at vulputate nisi neque a odio. Fusce suscipit, risus sed lacinia egestas, arcu felis feugiat erat, et fermentum metus nunc at nunc.",
+        taskTitle: "React Component Library",
         status: "success"
     },
     {
@@ -18,6 +19,7 @@ const contributionsList = [
         difficulty: "MEDIUM",
         techStack: ["React", "TypeScript", "Storybook"],
         description: "Create a reusable component library for React applications with TypeScript support and Storybook documentation.",
+        taskTitle: "React Component Library",
         status: "error"
     },
     {
@@ -25,11 +27,14 @@ const contributionsList = [
         difficulty: "EASY",
         techStack: ["Node.js", "Express", "MongoDB"],
         description: "Develop a service to integrate multiple third-party APIs and provide a unified interface for client applications.",
-        status: "success"
+        status: "success",
+        taskTitle: "React Component Library"
+
     }
 ]
 
-export function MyContributions() {
+export function MyContributions( {contributionsList , token}) {
+    console.log(contributionsList)
     return (
         <div className="space-y-4">
             <h1 className="text-2xl font-bold">My Contributions</h1>
@@ -37,7 +42,7 @@ export function MyContributions() {
             <ScrollArea className="h-[calc(100vh-200px)] rounded-md border p-4">
                 <div className="space-y-4">
                     {contributionsList.map((project, index) => (
-                        <ContributionCard key={index} {...project} />
+                        <ContributionCard key={index} {...project} token={token} />
                     ))}
                 </div>
             </ScrollArea>

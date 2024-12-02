@@ -42,7 +42,9 @@ export function ProjectCard({ _id, title, difficulty, tech_stack, description })
                 <Link href="/home/my-projects/manage-contributions">
                     <button className="bg-green-600 text-white px-2 py-1 rounded mr-2">Manage Contributions</button>
                 </Link>
-                <button className="bg-green-600 text-white px-2 py-1 rounded mx-2">Manage Requests</button>
+                <Link href="/home/my-projects/manage-requests">
+                    <button className="bg-green-600 text-white px-2 py-1 rounded mx-2">Manage Requests</button>
+                </Link>
                 <Link href={`/home/my-projects/manage-tasks/${_id}`}>
                     <button className="bg-green-600 text-white px-2 py-1 rounded mx-2">Manage Tasks</button>
                 </Link>

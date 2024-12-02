@@ -1,7 +1,8 @@
 "use client"
 
-import { useState } from "react"
-import { useRouter } from "next/navigation"
+import { useEffect, useState } from "react"
+
+import {useParams, useRouter} from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -23,9 +24,25 @@ const user = {
 
 const experienceLevels = ["Beginner", "Intermediate", "Advanced", "Expert"]
 
-export function EditProfileForm() {
-    const router = useRouter()
-    const [formData, setFormData] = useState(user)
+export function EditProfileForm({token}) {
+    const router = useRouter();
+    //console.log(useParams())
+    const { expertise, techStack } = useParams()
+    const [formData, setFormData] = useState({
+        expertise: expertise || "",
+        techStack: techStack || "",
+        experienceLevel: "Intermediate",
+    });
+
+    useEffect(() => {
+        if (expertise || techStack) {
+            setFormData((prev) => ({
+                ...prev,
+                expertise: expertise || "",
+                techStack: techStack || "",
+            }));
+        }
+    }, [expertise, techStack]);
 
     const handleChange = (e) => {
         const { name, value } = e.target
@@ -36,12 +53,37 @@ export function EditProfileForm() {
         setFormData((prev) => ({ ...prev, experienceLevel: value }))
     }
 
-    const handleSubmit = (e) => {
-        e.preventDefault()
-        console.log("Updated profile:", formData)
-        // Here you would typically send the data to your backend
-        router.push("/profile")
-    }
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+
+        try {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/user/edit-profile`, {
+                method: 'PATCH',
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    experienceLevel: formData.experienceLevel,
+                    expertise: formData.expertise,
+                    techStack: formData.techStack,
+                }),
+            });
+
+            const data = await response.json();
+            if (response.ok) {
+                console.log('res')
+                alert(data.message);
+                router.push('/user/profile');
+            } else {
+                alert(data.message);
+            }
+        } catch (error) {
+            console.error(error);
+            alert('Error updating profile');
+        }
+    };
+
 
     return (
         <div className="container mx-auto p-6">
@@ -92,7 +134,7 @@ export function EditProfileForm() {
                     </CardContent>
                     <CardFooter className="flex justify-between">
                         <Button variant="outline" onClick={() => router.push("/home/profile")}>Cancel</Button>
-                        <Button type="submit" onClick={() => router.push("/home/profile")}>Save Changes</Button>
+                        <Button type="submit">Save Changes</Button>
                     </CardFooter>
                 </form>
             </Card>

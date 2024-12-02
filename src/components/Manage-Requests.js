@@ -1,37 +1,89 @@
-"use client"
+"use client";
 
-import { ScrollArea } from "@/components/ui/scroll-area"
-import { Separator } from "@/components/ui/separator"
-import {ManageRequestsCard} from "@/components/ui components custom/manage-requests-card";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Separator } from "@/components/ui/separator";
+import { ManageRequestsCard } from "@/components/ui components custom/manage-requests-card";
+import { useState } from "react";
 
-const contributionsList = [
-    {
-        title: "Image recreation with GA",
-        contributor: "Hamza",
-        task: "Improve Speed",
-        comment: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin aliquam, nisl a tempor interdum, sapien magna eleifend ex, at vulputate nisi neque a odio. Fusce suscipit, risus sed lacinia egestas, arcu felis feugiat erat, et fermentum metus nunc at nunc.",
-    },
-    {
-        title: "Image recreation with GA",
-        contributor: "Hamza",
-        task: "Reduce Lag",
-        comment: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin aliquam, nisl a tempor interdum, sapien magna eleifend ex, at vulputate nisi neque a odio. Fusce suscipit, risus sed lacinia egestas, arcu felis feugiat erat, et fermentum metus nunc at nunc.",
-    }
-]
+export function ManageRequests({ requests, token }) {
+    const [loading, setLoading] = useState(false);
 
-export function ManageRequests() {
+    const declineTask = async (taskID, username) => {
+        setLoading(true);
+        try {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/owner/decline-task`, {
+                method: 'POST',
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    taskID,
+                    username,
+                }),
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                alert(data.message);
+                // Optional: Refresh the list or update UI here
+            } else {
+                const errorData = await response.json();
+                alert(`Error: ${errorData.message}`);
+            }
+        } catch (error) {
+            alert("An error occurred while declining the task.");
+            console.error(error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const assignTask = async (taskID, username) => {
+        setLoading(true);
+        try {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/owner/assign-task`, {
+                method: 'POST',
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    taskID,
+                    username,
+                }),
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                alert(data.message);
+                // Optional: Refresh the list or update UI here
+            } else {
+                const errorData = await response.json();
+                alert(`Error: ${errorData.message}`);
+            }
+        } catch (error) {
+            alert("An error occurred while assigning the task.");
+            console.error(error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
     return (
         <div className="space-y-4">
-            <h1 className="text-2xl font-bold">Manage Contributions</h1>
-            <Separator />
-            <ScrollArea className="h-[calc(100vh-200px)] rounded-md border p-4">
-                <div className="space-y-4">
-                    {contributionsList.map((project, index) => (
-                        <ManageRequestsCard key={index} {...project} />
-                    ))}
-                </div>
-            </ScrollArea>
+            {requests.map((request, index) => (
+                <ManageRequestsCard
+                    key={index}
+                    projectTitle={request.projectTitle}
+                    requestFrom={request.requestFrom}
+                    taskTitle={request.taskTitle}
+                    taskDescription={request.taskDescription}
+                    onAssignTask={() => assignTask(request.taskID, request.requestFrom)}
+                    onDeclineTask={() => declineTask(request.taskID, request.requestFrom)}
+                    loading={loading}
+                />
+            ))}
         </div>
-    )
+    );
 }
-

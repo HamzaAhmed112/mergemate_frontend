@@ -10,7 +10,7 @@ export default function Layout({ children }) {
                     <MainSidebar/>
                 </div>
 
-                <div className="flex-1 p-6">
+                <div className="flex-1 p-6 min-w-full">
                     {children}
                 </div>
             </div>
