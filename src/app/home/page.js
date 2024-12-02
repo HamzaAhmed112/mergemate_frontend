@@ -3,6 +3,7 @@
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState, Suspense } from "react";
 import { MyProjects } from "@/components/My-Projects";
+import Loading from "@/components/loading";
 
 function MyProjectsPageContent() {
     const router = useRouter();
@@ -37,11 +38,11 @@ function MyProjectsPageContent() {
     console.log(token);
 
     if (!token) {
-        return <div>Loading...</div>;  // Add fallback UI if token is not set
+        return <Loading/>;  // Add fallback UI if token is not set
     }
 
     return (
-        <div className="flex-1 p-6 bg-gray-50">
+        <div className="flex-1 p-6">
             <MyProjects token={token} />
         </div>
     );

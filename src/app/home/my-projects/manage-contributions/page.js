@@ -4,7 +4,7 @@ import {ManageContributions} from "@/components/Manage-Contributions";
 import {useEffect, useState} from "react";
 import Loading from "@/components/loading";
 
-export default function MyContributionsPage() {
+export default function ManageContributionsPage() {
     const [token, setToken] = useState(undefined);
     const [waitingWork, setWaitingWork] = useState(undefined);
 

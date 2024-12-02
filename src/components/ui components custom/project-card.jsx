@@ -12,7 +12,7 @@ import Link from "next/link";
 export function ProjectCard({ _id, title, difficulty, tech_stack, description }) {
 
     return (
-        <Card className="max-w-2xl">
+        <Card className="max-w-2xl my-1">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-2xl font-bold">{title}</CardTitle>
             </CardHeader>
@@ -40,13 +40,13 @@ export function ProjectCard({ _id, title, difficulty, tech_stack, description })
             </CardContent>
             <CardFooter>
                 <Link href="/home/my-projects/manage-contributions">
-                    <button className="bg-green-600 text-white px-2 py-1 rounded mr-2">Manage Contributions</button>
+                    <button className="bg-custom-gray text-white px-2 py-1 rounded mr-2">Manage Contributions</button>
                 </Link>
                 <Link href="/home/my-projects/manage-requests">
-                    <button className="bg-green-600 text-white px-2 py-1 rounded mx-2">Manage Requests</button>
+                    <button className="bg-custom-gray text-white px-2 py-1 rounded mx-2">Manage Requests</button>
                 </Link>
                 <Link href={`/home/my-projects/manage-tasks/${_id}`}>
-                    <button className="bg-green-600 text-white px-2 py-1 rounded mx-2">Manage Tasks</button>
+                    <button className="bg-custom-gray text-white px-2 py-1 rounded mx-2">Manage Tasks</button>
                 </Link>
             </CardFooter>
         </Card>

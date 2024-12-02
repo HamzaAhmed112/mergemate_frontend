@@ -10,6 +10,7 @@ import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, Dialog
 export function Explore({ token, projects }) {
     const [currentIndex, setCurrentIndex] = useState(0);
     const [isDialogOpen, setIsDialogOpen] = useState(false);
+    const [alertMessage, setAlertMessage] = useState("");
     const [expandedTaskIndex, setExpandedTaskIndex] = useState(null);
     const [requestedTasks, setRequestedTasks] = useState({}); // Tracks requested tasks by their ID.
 
@@ -28,12 +29,12 @@ export function Explore({ token, projects }) {
             if (res.ok && res.status === 200) {
                 return true;
             } else {
-                alert(data.message || "Request failed");
+                setAlertMessage(data.message || "Request Failed");
                 return false;
             }
         } catch (error) {
             console.error("Error fetching projects:", error);
-            alert("Server error when requesting collaboration");
+            setAlertMessage("Server error when requesting collaboration");
             return false;
         }
     };
@@ -136,48 +137,48 @@ export function Explore({ token, projects }) {
                     <div className="space-y-4">
                         {currentProject.tasks.length > 0 ? (
                             currentProject.tasks.map((task, index) => (
-                                    <div
-                                        key={task._id}
-                                        className="border p-4 rounded-lg shadow-sm"
-                                    >
-                                        <div className="flex justify-between items-center">
-                                            <span className="font-bold">{task.title}</span>
-                                            <Button
-                                                variant="ghost"
-                                                size="icon"
-                                                onClick={() => toggleTaskExpansion(index)}
-                                            >
-                                                {expandedTaskIndex === index ? (
-                                                    <ChevronUp className="h-5 w-5" />
-                                                ) : (
-                                                    <ChevronDown className="h-5 w-5" />
-                                                )}
-                                            </Button>
-                                        </div>
-                                        {expandedTaskIndex === index && (
-                                            <div className="mt-2 text-sm text-muted-foreground">
-                                                {task.description}
-                                            </div>
-                                        )}
+                                <div
+                                    key={task._id}
+                                    className="border p-4 rounded-lg shadow-sm"
+                                >
+                                    <div className="flex justify-between items-center">
+                                        <span className="font-bold">{task.title}</span>
                                         <Button
-                                            className={`mt-2 text-white w-full ${
-                                                requestedTasks[task._id] || task.assigned
-                                                    ? "bg-gray-500 cursor-not-allowed"
-                                                    : "bg-green-600 hover:bg-green-700"
-                                            }`}
-                                            onClick={() =>
-                                                !requestedTasks[task._id] && !task.assigned && handleRequestCollaboration(task)
-                                            }
-                                            disabled={requestedTasks[task._id] || task.assigned}
+                                            variant="ghost"
+                                            size="icon"
+                                            onClick={() => toggleTaskExpansion(index)}
                                         >
-                                            {task.assigned
-                                                ? "Already Assigned"
-                                                : requestedTasks[task._id]
-                                                    ? "Requested"
-                                                    : "Request Collaboration"}
+                                            {expandedTaskIndex === index ? (
+                                                <ChevronUp className="h-5 w-5" />
+                                            ) : (
+                                                <ChevronDown className="h-5 w-5" />
+                                            )}
                                         </Button>
                                     </div>
-                                ))
+                                    {expandedTaskIndex === index && (
+                                        <div className="mt-2 text-sm text-muted-foreground">
+                                            {task.description}
+                                        </div>
+                                    )}
+                                    <Button
+                                        className={`mt-2 text-white w-full ${
+                                            requestedTasks[task._id] || task.assigned
+                                                ? "bg-gray-500 cursor-not-allowed"
+                                                : "bg-green-600 hover:bg-green-700"
+                                        }`}
+                                        onClick={() =>
+                                            !requestedTasks[task._id] && !task.assigned && handleRequestCollaboration(task)
+                                        }
+                                        disabled={requestedTasks[task._id] || task.assigned}
+                                    >
+                                        {task.assigned
+                                            ? "Already Assigned"
+                                            : requestedTasks[task._id]
+                                                ? "Requested"
+                                                : "Request Collaboration"}
+                                    </Button>
+                                </div>
+                            ))
 
                         ) : (
                             <p className="text-center text-muted-foreground">No tasks available</p>
@@ -194,6 +195,26 @@ export function Explore({ token, projects }) {
                     </DialogFooter>
                 </DialogContent>
             </Dialog>
+
+            {alertMessage && (
+                <Dialog open={!!alertMessage} onOpenChange={() => setAlertMessage("")}>
+                    <DialogContent>
+                        <DialogHeader>
+                            <DialogTitle>Alert</DialogTitle>
+                        </DialogHeader>
+                        <p>{alertMessage}</p>
+                        <DialogFooter>
+                            <Button
+                                className="w-full"
+                                variant="outline"
+                                onClick={() => setAlertMessage("")}
+                            >
+                                Close
+                            </Button>
+                        </DialogFooter>
+                    </DialogContent>
+                </Dialog>
+            )}
         </div>
     );
 }

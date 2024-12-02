@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 
-export function AddProjectDialog({ open, onOpenChange }) {
+export function AddProjectDialog({ open, onOpenChange, repos }) {
     const [selectedTechStack, setSelectedTechStack] = useState([]);
     const [projectName, setProjectName] = useState("");
     const [repository, setRepository] = useState("");
@@ -21,7 +21,6 @@ export function AddProjectDialog({ open, onOpenChange }) {
         e.preventDefault();
 
         const token = localStorage.getItem("token"); // Retrieve token for authorization
-        console.log(selectedTechStack)
         const projectData = {
             title: projectName,
             repository,
@@ -87,9 +86,11 @@ export function AddProjectDialog({ open, onOpenChange }) {
                                 required
                             >
                                 <option value="">Select repository</option>
-                                <option value="repo1">Repository 1</option>
-                                <option value="repo2">Repository 2</option>
-                                <option value="repo3">Repository 3</option>
+                                {repos.map((repo, index) => (
+                                    <option key={index} value={repo}>
+                                        {repo}
+                                    </option>
+                                ))}
                             </select>
                         </div>
 
@@ -115,7 +116,10 @@ export function AddProjectDialog({ open, onOpenChange }) {
                                 Tech Stack
                             </label>
                             <div className="flex flex-wrap gap-4">
-                                {["react", "nextjs", "typescript", "node"].map((tech) => (
+                                {[
+                                    "react", "nextjs", "typescript", "node", "python", "django",
+                                    "java", "spring", "html", "css", "mongodb", "graphql"
+                                ].map((tech) => (
                                     <label key={tech} className="cursor-pointer flex items-center">
                                         <input
                                             type="checkbox"

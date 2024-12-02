@@ -1,7 +1,19 @@
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 
-export function ContributionCard({ title, difficulty, tech_stack, taskTitle, taskDescription, status, taskID, projectID, token }) {
+
+export function ContributionCard({
+                                     title,
+                                     difficulty,
+                                     tech_stack,
+                                     taskTitle,
+                                     taskDescription,
+                                     status,
+                                     taskID,
+                                     projectID,
+                                     token,
+                                     updateTaskStatus,  // New prop
+                                 }) {
     const getButtonProps = () => {
         if (status === 0) {
             return { text: "Mark as Completed", disabled: false, className: "bg-green-600 text-white px-2 py-1 rounded" };
@@ -11,7 +23,6 @@ export function ContributionCard({ title, difficulty, tech_stack, taskTitle, tas
             return { text: "Completed", disabled: true, className: "bg-gray-500 text-white px-2 py-1 rounded cursor-not-allowed" };
         } else if (status === 3) {
             return { text: "Rejected", disabled: true, className: "bg-red-500 text-white px-2 py-1 rounded cursor-not-allowed" };
-
         }
     };
 
@@ -23,7 +34,7 @@ export function ContributionCard({ title, difficulty, tech_stack, taskTitle, tas
                 method: "PATCH",
                 headers: {
                     Authorization: `Bearer ${token}`,
-                    "Content-Type": "application/json"
+                    "Content-Type": "application/json",
                 },
                 body: JSON.stringify({ projectID }),
             });
@@ -34,13 +45,16 @@ export function ContributionCard({ title, difficulty, tech_stack, taskTitle, tas
 
             const data = await response.json();
             console.log("Task status updated successfully:", data);
+
+            // Immediately update the status in the UI
+            updateTaskStatus(taskID, 2); // Assuming 2 is the 'Completed' status
         } catch (error) {
             console.error("Error updating task status:", error);
         }
     };
 
     return (
-        <Card className="max-w-2xl">
+        <Card className="w-full">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-2xl font-bold">{title}</CardTitle>
             </CardHeader>

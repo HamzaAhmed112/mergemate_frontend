@@ -45,6 +45,7 @@ export function ProfileView({ token }) {
                     <div>
                         <CardTitle className="text-3xl">{userProfile.username}</CardTitle>
                         <Button
+                            className="hover:cursor-pointer"
                             asChild
                             onClick={() =>
                                 router.push(

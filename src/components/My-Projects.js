@@ -11,6 +11,7 @@ import {ProjectCard} from "@/components/ui components custom/project-card"
 export function MyProjects({token}) {
     const [isDialogOpen, setIsDialogOpen] = useState(false)
     const [userProjects, setUserProjects] = useState(undefined)
+    const [userRepos, setUserRepos] = useState(undefined)
 
 
     async function getUserProjects(token) {
@@ -19,7 +20,9 @@ export function MyProjects({token}) {
                 Authorization: `Bearer ${token}`,
             },
         })
-        setUserProjects(await res.json())
+        const data = await res.json()
+        setUserProjects(data.projects)
+        setUserRepos(data.repos)
     }
 
     useEffect(() => {
@@ -51,7 +54,7 @@ export function MyProjects({token}) {
                         <div>Loading...</div>
                     )}
                 </ScrollArea>
-                <AddProjectDialog open={isDialogOpen} onOpenChange={setIsDialogOpen} />
+                <AddProjectDialog open={isDialogOpen} onOpenChange={setIsDialogOpen} repos={userRepos} />
             </div>
         );
     } else {

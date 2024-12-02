@@ -3,12 +3,19 @@
 import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 
 export function ManageContributionsCard({ assignedTo, projectTitle, taskDescription, taskID, projectID, token }) {
     const [isDialogOpen, setIsDialogOpen] = useState(false);
-    const [declineReason, setDeclineReason] = useState(""); // Track reason for decline
+    const [declineReason, setDeclineReason] = useState("");
+    const [alertMessage, setAlertMessage] = useState(null); // Track alert message
+    const [isAlertDialogOpen, setIsAlertDialogOpen] = useState(false); // Track alert dialog state
+
+    const showAlert = (message) => {
+        setAlertMessage(message);
+        setIsAlertDialogOpen(true);
+    };
 
     const handleApprove = async () => {
         try {
@@ -20,26 +27,25 @@ export function ManageContributionsCard({ assignedTo, projectTitle, taskDescript
                 },
                 body: JSON.stringify({
                     projectID,
-                    status: 2, // Approved status
+                    status: 2,
                 }),
             });
 
             const data = await response.json();
-            console.log(data)
             if (response.ok) {
-                alert(data.message); // Notify success
+                showAlert(data.message);
             } else {
-                alert(data.message); // Handle error
+                showAlert(data.message);
             }
         } catch (error) {
             console.error(error);
-            alert("Error approving task");
+            showAlert("Error approving task");
         }
     };
 
     const handleDecline = async () => {
         if (!declineReason) {
-            alert("Please provide a reason for declining");
+            showAlert("Please provide a reason for declining");
             return;
         }
 
@@ -48,7 +54,7 @@ export function ManageContributionsCard({ assignedTo, projectTitle, taskDescript
                 method: "PATCH",
                 headers: {
                     Authorization: `Bearer ${token}`,
-                    "Content-Type": "application/json"
+                    "Content-Type": "application/json",
                 },
                 body: JSON.stringify({
                     projectID,
@@ -59,14 +65,14 @@ export function ManageContributionsCard({ assignedTo, projectTitle, taskDescript
 
             const data = await response.json();
             if (response.ok) {
-                alert(data.message); // Notify success
+                showAlert(data.message);
             } else {
-                alert(data.message); // Handle error
+                showAlert(data.message);
             }
-            setIsDialogOpen(false); // Close the dialog after submission
+            setIsDialogOpen(false);
         } catch (error) {
             console.error(error);
-            alert("Error declining task");
+            showAlert("Error declining task");
         }
     };
 
@@ -111,7 +117,7 @@ export function ManageContributionsCard({ assignedTo, projectTitle, taskDescript
                             placeholder="Enter reason for decline"
                             className="w-full px-3 py-2 border rounded-md"
                             value={declineReason}
-                            onChange={(e) => setDeclineReason(e.target.value)} // Update state with reason
+                            onChange={(e) => setDeclineReason(e.target.value)}
                         />
                     </div>
                     <DialogFooter>
@@ -124,6 +130,22 @@ export function ManageContributionsCard({ assignedTo, projectTitle, taskDescript
                         </Button>
                         <Button className="bg-green-500 text-white hover:bg-green-600" onClick={handleDecline}>
                             Submit
+                        </Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
+
+            <Dialog open={isAlertDialogOpen} onOpenChange={setIsAlertDialogOpen}>
+                <DialogContent>
+                    <DialogHeader>
+                        <DialogTitle>Notification</DialogTitle>
+                    </DialogHeader>
+                    <div className="space-y-4">
+                        <p>{alertMessage}</p>
+                    </div>
+                    <DialogFooter>
+                        <Button className="bg-blue-500 text-white hover:bg-blue-600" onClick={() => setIsAlertDialogOpen(false)}>
+                            OK
                         </Button>
                     </DialogFooter>
                 </DialogContent>
