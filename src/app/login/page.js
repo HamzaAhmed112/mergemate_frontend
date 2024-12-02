@@ -1,13 +1,12 @@
 "use client";
 
-import { Suspense, useState, useEffect } from "react";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import LoginForm from "@/components/LoginForm";
-import { useRouter, useSearchParams } from "next/navigation";
 import Loading from "@/components/loading";
 
-export default function LoginPage() {
+function LoginWrapper() {
     const router = useRouter();
-    const searchParams = useSearchParams();
     const [token, setToken] = useState(undefined);
 
     useEffect(() => {
@@ -15,18 +14,22 @@ export default function LoginPage() {
         if (tokenFromStorage) {
             router.replace("/home/my-projects");
         }
-    }, [searchParams, router]);
-
-    console.log(token);
+    }, [router]);
 
     return (
         <div className="flex min-h-screen items-center justify-center bg-gray-100">
             <div className="w-full max-w-md">
                 <h1 className="mb-8 text-center text-4xl font-bold text-gray-900">MergeMate</h1>
-                <Suspense fallback={<Loading />}>
-                    <LoginForm />
-                </Suspense>
+                <LoginForm />
             </div>
+        </div>
+    );
+}
+
+export default function LoginPage() {
+    return (
+        <div>
+            <LoginWrapper />
         </div>
     );
 }

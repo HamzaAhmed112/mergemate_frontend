@@ -74,7 +74,7 @@ export function EditProfileForm({token}) {
             if (response.ok) {
                 console.log('res')
                 alert(data.message);
-                router.push('/user/profile');
+                router.push('/home/profile');
             } else {
                 alert(data.message);
             }
