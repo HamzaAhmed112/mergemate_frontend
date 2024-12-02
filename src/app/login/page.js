@@ -1,11 +1,25 @@
+"use client"
+
+
 import LoginForm from '@/components/LoginForm'
-import Cookies from "js-cookie";
+import {useRouter, useSearchParams} from "next/navigation";
+import {useEffect, useState} from "react";
+import Loading from "@/components/loading";
 
 export default function LoginPage() {
-    const token = Cookies.get('auth_token')
-    if (token) {
+    const router = useRouter();
+    const searchParams = useSearchParams();
+    const [token, setToken] = useState(undefined);
 
-    }
+    useEffect(() => {
+        const tokenFromStorage = localStorage.getItem("token");
+        if (tokenFromStorage) {
+            router.replace('/home/my-projects')
+        }
+    }, [searchParams, router]);
+
+    console.log(token);
+
     return (
         <div className="flex min-h-screen items-center justify-center bg-gray-100">
             <div className="w-full max-w-md">
