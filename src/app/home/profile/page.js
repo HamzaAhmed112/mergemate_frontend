@@ -1,6 +1,6 @@
 "use client"
 
-import { ProfileView } from "../../../components/profile-view"
+import { ProfileView } from "@/components/Profile-View"
 import {useEffect, useState} from "react";
 
 

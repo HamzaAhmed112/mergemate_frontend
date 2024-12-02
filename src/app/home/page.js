@@ -2,7 +2,7 @@
 
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import { MyProjects } from "../../components/my-projects";
+import { MyProjects } from "@/components/My-Projects";
 
 export default function MyProjectsPage() {
     const router = useRouter();
