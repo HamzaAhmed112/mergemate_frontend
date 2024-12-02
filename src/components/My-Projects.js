@@ -5,7 +5,7 @@ import {Button} from "@/components/ui/button"
 import {ScrollArea} from "@/components/ui/scroll-area"
 import {Separator} from "@/components/ui/separator"
 import {PlusCircle} from 'lucide-react'
-import {AddProjectDialog} from "@/components/add-project-dialog"
+import {AddProjectDialog} from "@/components/Add-Project-Dialog"
 import {ProjectCard} from "@/components/ui components custom/project-card"
 
 export function MyProjects({token}) {
