@@ -1,6 +1,6 @@
 "use client";
 
-import {Explore} from '../../../components/explore';
+import {Explore} from '../../../components/Explore';
 import { useEffect, useState } from "react";
 import Loading from "../../../components/loading";
 
