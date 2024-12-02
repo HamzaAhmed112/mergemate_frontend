@@ -1,8 +1,8 @@
 "use client"
 
-import { EditProfileForm } from "@/components/edit-profile-form"
+import { EditProfileForm } from "../../../../components/edit-profile-form"
 import {useEffect, useState} from "react";
-import Loading from "@/components/loading";
+import Loading from "../../../../components/loading";
 
 export default function EditProfilePage() {
     const [token, setToken] = useState(undefined);

@@ -1,6 +1,6 @@
 "use client"
 
-import { MyProjects } from "@/components/My-Projects"
+import { MyProjects } from "../../../components/My-Projects"
 import {useEffect, useState} from "react";
 import Loading from "@/components/loading";
 

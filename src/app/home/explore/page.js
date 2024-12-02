@@ -1,8 +1,8 @@
 "use client";
 
-import { Explore } from "@/components/explore";
+import {Explore} from '../../../components/explore';
 import { useEffect, useState } from "react";
-import Loading from "@/components/loading";
+import Loading from "../../../components/loading";
 
 export default function ExplorePage() {
     const [projects, setProjects] = useState(undefined);
