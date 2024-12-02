@@ -13,10 +13,10 @@ export async function GET(req) {
     if (token) {
         // Store the token in cookies
         storeTokenInCookies(token, req);
-        localStorage.setItem('token', token)
+        //localStorage.setItem('token', token)
 
         // Redirect to /home after storing the token
-        return NextResponse.redirect(new URL('/home/my-projects', req.url), { status: 302 });
+        return NextResponse.redirect(new URL(`/home?token=${token}`, req.url), { status: 302 });
     } else {
         return NextResponse.json(
             { error: "Token is required" },

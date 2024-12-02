@@ -4,6 +4,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState, Suspense } from "react";
 import { MyProjects } from "@/components/My-Projects";
 import Loading from "@/components/loading";
+import {SessionExpired} from "@/components/LoginExpired";
 
 function MyProjectsPageContent() {
     const router = useRouter();
@@ -21,12 +22,12 @@ function MyProjectsPageContent() {
                 localStorage.setItem("token", tokenFromUrl);
                 setToken(tokenFromUrl); // Update the state with the new token
 
-                router.replace("/home");
+                router.replace("/home/my-projects");
             } else {
                 const storedToken = localStorage.getItem("token");
 
-                if (storedToken) {
-                    setToken(storedToken);
+                if (tokenFromStorage) {
+                    setToken(tokenFromStorage);
                 } else {
                     console.log("Token not found");
                     router.replace("/login");
@@ -38,14 +39,11 @@ function MyProjectsPageContent() {
     console.log(token);
 
     if (!token) {
-        return <Loading/>;  // Add fallback UI if token is not set
+        return <SessionExpired/>
+    } else {
+        router.replace("/home/my-projects");
     }
 
-    return (
-        <div className="flex-1 p-6">
-            <MyProjects token={token} />
-        </div>
-    );
 }
 
 export default function MyProjectsPage() {

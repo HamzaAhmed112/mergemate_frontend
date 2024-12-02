@@ -18,7 +18,7 @@ export default function LoginForm() {
                 <CardDescription>Sign in to your account to continue</CardDescription>
             </CardHeader>
             <CardContent>
-                <Link href="/home/explore">
+                <Link href="">
                     <Button onClick={handleGitHubLogin} className="w-full text-white bg-green-600 hover:bg-green-700 hover:text-white" variant="outline">
                         <Github className="mr-2 h-4 w-4 text-white" />
                         Sign in with GitHub
