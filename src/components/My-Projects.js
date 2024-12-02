@@ -52,7 +52,16 @@ export function MyProjects({token}) {
                     {userProjects.length > 0 ? (
                         projectCards
                     ) : (
-                        <div>Loading...</div>
+                        <div className="flex flex-col items-center justify-center h-full bg-gray-50 p-8">
+                            <div className="bg-white p-6 rounded-lg shadow-md text-center">
+                                <h2 className="text-2xl font-semibold text-gray-800 mb-4">
+                                    No Projects Yet
+                                </h2>
+                                <p className="text-gray-600 mb-6">
+                                    It seems like you haven't created or joined any projects yet. Start your journey by creating a new project.
+                                </p>
+                            </div>
+                        </div>
                     )}
                 </ScrollArea>
                 <AddProjectDialog open={isDialogOpen} onOpenChange={setIsDialogOpen} repos={userRepos} />

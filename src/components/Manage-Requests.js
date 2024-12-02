@@ -26,7 +26,6 @@ export function ManageRequests({ requests, token }) {
             if (response.ok) {
                 const data = await response.json();
                 alert(data.message);
-                // Optional: Refresh the list or update UI here
             } else {
                 const errorData = await response.json();
                 alert(`Error: ${errorData.message}`);

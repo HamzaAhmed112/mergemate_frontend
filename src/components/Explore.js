@@ -1,5 +1,6 @@
 "use client";
-
+import { Separator } from "@/components/ui/separator"
+import { ThumbsUp, ThumbsDown, Eye, Gauge, Layers } from 'lucide-react'
 import { useState } from "react";
 import { Check, X, ChevronDown, ChevronUp } from "lucide-react";
 import { Card, CardContent, CardHeader, CardFooter, CardTitle } from "@/components/ui/card";
@@ -36,6 +37,31 @@ export function Explore({ token, projects }) {
             console.error("Error fetching projects:", error);
             setAlertMessage("Server error when requesting collaboration");
             return false;
+        }
+    };
+
+    const handleInteraction = async (projectID, state) => {
+        try {
+            const response = await fetch(
+                `${process.env.NEXT_PUBLIC_BACKEND_URL}/user/notification/ld/${projectID}/${state}`,
+                {
+                    method: "POST",
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        "Content-Type": "application/json",
+                    },
+                }
+            );
+
+            if (response.ok) {
+                alert(state === 1 ? "Project liked!" : "Project disliked!");
+            } else {
+                const data = await response.json();
+                alert(data.message || "Something went wrong!");
+            }
+        } catch (error) {
+            console.error("Error interacting with project:", error);
+            alert("Server error occurred!");
         }
     };
 
@@ -85,48 +111,108 @@ export function Explore({ token, projects }) {
                 >
                     <X className="h-4 w-4 text-white hover:text-white" />
                 </Button>
-                <Card className="w-full">
-                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-2xl font-bold">{currentProject.title}</CardTitle>
+                {/*<Card className="w-full">*/}
+                {/*    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">*/}
+                {/*        <CardTitle className="text-2xl font-bold">{currentProject.title}</CardTitle>*/}
+                {/*    </CardHeader>*/}
+                {/*    <CardContent className="space-y-4">*/}
+                {/*        <div className="space-y-2">*/}
+                {/*            <div className="flex items-center gap-2">*/}
+                {/*                <span className="font-semibold">Difficulty:</span>*/}
+                {/*                <Badge variant="secondary">{currentProject.difficulty}</Badge>*/}
+                {/*            </div>*/}
+                {/*            <div className="flex items-center gap-2">*/}
+                {/*                <span className="font-semibold">Tech Stack:</span>*/}
+                {/*                <div className="flex flex-wrap gap-2">*/}
+                {/*                    {currentProject.tech_stack.map((tech) => (*/}
+                {/*                        <Badge key={tech} variant="outline">*/}
+                {/*                            {tech}*/}
+                {/*                        </Badge>*/}
+                {/*                    ))}*/}
+                {/*                </div>*/}
+                {/*            </div>*/}
+                {/*        </div>*/}
+                {/*        <div className="space-y-2">*/}
+                {/*            <span className="font-semibold">Description:</span>*/}
+                {/*            <p className="text-muted-foreground">{currentProject.description}</p>*/}
+                {/*        </div>*/}
+                {/*    </CardContent>*/}
+                {/*    <CardFooter>*/}
+                {/*        <Button*/}
+                {/*            className="w-full bg-custom-gray  text-white"*/}
+                {/*            onClick={handleViewTasks}*/}
+                {/*        >*/}
+                {/*            View Tasks*/}
+                {/*        </Button>*/}
+                {/*    </CardFooter>*/}
+                {/*</Card>*/}
+                <Card className="w-full max-w-md mx-auto overflow-hidden transition-all duration-300 hover:shadow-lg">
+                    <CardHeader className="pb-3">
+                        <CardTitle className="text-2xl font-bold truncate">{currentProject.title}</CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-4">
-                        <div className="space-y-2">
+                        <div className="flex items-center justify-between">
                             <div className="flex items-center gap-2">
-                                <span className="font-semibold">Difficulty:</span>
-                                <Badge variant="secondary">{currentProject.difficulty}</Badge>
+                                <Gauge className="w-5 h-5 text-yellow-500" />
+                                <span className="font-semibold text-sm">Difficulty:</span>
+                                <Badge variant="secondary" className="font-medium">
+                                    {currentProject.difficulty}
+                                </Badge>
                             </div>
                             <div className="flex items-center gap-2">
-                                <span className="font-semibold">Tech Stack:</span>
-                                <div className="flex flex-wrap gap-2">
-                                    {currentProject.tech_stack.map((tech) => (
-                                        <Badge key={tech} variant="outline">
-                                            {tech}
-                                        </Badge>
-                                    ))}
-                                </div>
+                                <Layers className="w-5 h-5 text-blue-500" />
+                                <span className="font-semibold text-sm">Tech Stack:</span>
                             </div>
                         </div>
+                        <div className="flex flex-wrap gap-2">
+                            {currentProject.tech_stack.map((tech) => (
+                                <Badge key={tech} variant="outline" className="text-xs">
+                                    {tech}
+                                </Badge>
+                            ))}
+                        </div>
+                        <Separator />
                         <div className="space-y-2">
-                            <span className="font-semibold">Description:</span>
-                            <p className="text-muted-foreground">{currentProject.description}</p>
+                            <span className="font-semibold text-sm">Description:</span>
+                            <p className="text-sm text-muted-foreground line-clamp-3">{currentProject.description}</p>
                         </div>
                     </CardContent>
-                    <CardFooter>
+                    <CardFooter className="flex flex-col gap-3">
                         <Button
-                            className="w-full bg-custom-gray  text-white"
+                            className="w-full bg-primary hover:bg-primary/90 text-primary-foreground"
                             onClick={handleViewTasks}
                         >
+                            <Eye className="w-4 h-4 mr-2" />
                             View Tasks
                         </Button>
+                        <div className="flex justify-between w-full">
+                            <Button
+                                variant="outline"
+                                className="flex-1 mr-2"
+                                onClick={() => handleInteraction(currentProject._id,0)}
+                            >
+                                <ThumbsDown className="w-4 h-4 mr-2" />
+                                Dislike
+                            </Button>
+                            <Button
+                                variant="outline"
+                                className="flex-1 ml-2"
+                                onClick={() => handleInteraction(currentProject._id, 1)}
+                            >
+                                <ThumbsUp className="w-4 h-4 mr-2" />
+                                Like
+                            </Button>
+                        </div>
                     </CardFooter>
                 </Card>
+
                 <Button
                     variant="outline"
                     size="icon"
                     className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-1/2 rounded-full z-10 bg-green-600 hover:bg-green-700"
                     onClick={handleAccept}
                 >
-                    <Check className="h-4 w-4 text-white hover:text-white" />
+                    <Check className="h-4 w-4 text-white hover:text-white"/>
                 </Button>
             </div>
 
