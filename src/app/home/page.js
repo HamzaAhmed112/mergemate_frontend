@@ -1,18 +1,18 @@
 "use client";
 
 import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { MyProjects } from "@/components/My-Projects";
 
-export default function MyProjectsPage() {
+function MyProjectsPageContent() {
     const router = useRouter();
     const searchParams = useSearchParams();
     const [token, setToken] = useState(null);
 
-
     useEffect(() => {
         const tokenFromStorage = localStorage.getItem("token");
-        setToken(tokenFromStorage)
+        setToken(tokenFromStorage);
+
         if (!tokenFromStorage) {
             const tokenFromUrl = searchParams.get("token");
 
@@ -36,11 +36,21 @@ export default function MyProjectsPage() {
 
     console.log(token);
 
-    if (token) {
-        return (
-            <div className="flex-1 p-6 bg-gray-50">
-                <MyProjects token={token} />
-            </div>
-        );
+    if (!token) {
+        return <div>Loading...</div>;  // Add fallback UI if token is not set
     }
+
+    return (
+        <div className="flex-1 p-6 bg-gray-50">
+            <MyProjects token={token} />
+        </div>
+    );
+}
+
+export default function MyProjectsPage() {
+    return (
+        <Suspense fallback={<div>Loading...</div>}>
+            <MyProjectsPageContent />
+        </Suspense>
+    );
 }
