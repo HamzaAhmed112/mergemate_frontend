@@ -46,8 +46,7 @@ export function ContributionCard({
             const data = await response.json();
             console.log("Task status updated successfully:", data);
 
-            // Immediately update the status in the UI
-            updateTaskStatus(taskID, 2); // Assuming 2 is the 'Completed' status
+            updateTaskStatus(taskID, 2);
         } catch (error) {
             console.error("Error updating task status:", error);
         }

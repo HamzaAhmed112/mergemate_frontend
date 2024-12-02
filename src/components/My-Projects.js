@@ -7,6 +7,7 @@ import {Separator} from "@/components/ui/separator"
 import {PlusCircle} from 'lucide-react'
 import {AddProjectDialog} from "@/components/Add-Project-Dialog"
 import {ProjectCard} from "@/components/ui components custom/project-card"
+import Loading from "@/components/loading";
 
 export function MyProjects({token}) {
     const [isDialogOpen, setIsDialogOpen] = useState(false)
@@ -59,7 +60,17 @@ export function MyProjects({token}) {
         );
     } else {
         return (
-            <div>LOADING</div>
-        )
+            <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50">
+                <div className="text-center">
+                    <h2 className="text-2xl font-semibold text-gray-800 mb-4">
+                        No Projects Yet
+                    </h2>
+                    <p className="text-gray-600 mb-6">
+                        It looks like you haven’t started any projects. Let’s change that!. Create a project by clicking on the top right button
+                    </p>
+                </div>
+            </div>
+        );
+
     }
 }

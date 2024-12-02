@@ -42,7 +42,7 @@ export function AddProjectDialog({ open, onOpenChange, repos }) {
             if (response.ok) {
                 const data = await response.json();
                 console.log("Project created:", data);
-                onOpenChange(false); // Close dialog on success
+                onOpenChange(false);
             } else {
                 console.error("Failed to create project:", await response.text());
             }

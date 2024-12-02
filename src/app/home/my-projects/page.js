@@ -3,6 +3,7 @@
 import { MyProjects } from "@/components/My-Projects"
 import {useEffect, useState} from "react";
 import Loading from "@/components/loading";
+import {SessionExpired} from "@/components/LoginExpired";
 
 export default function MyProjectsPage() {
     const [token, setToken] = useState(undefined);
@@ -20,7 +21,7 @@ export default function MyProjectsPage() {
         )
     } else {
             return (
-                <Loading/>
+               <SessionExpired/>
             )
         }
 }

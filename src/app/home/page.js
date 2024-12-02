@@ -20,7 +20,7 @@ function MyProjectsPageContent() {
 
             if (tokenFromUrl) {
                 localStorage.setItem("token", tokenFromUrl);
-                setToken(tokenFromUrl); // Update the state with the new token
+                setToken(tokenFromUrl); 
 
                 router.replace("/home/my-projects");
             } else {

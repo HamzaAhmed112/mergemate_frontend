@@ -40,7 +40,6 @@ export default function ManageRequestsPage() {
         }
 
         if (storageToken) {
-            //console.log('running')
             fetchRequests(storageToken)
                 .then(r => console.log("Requests fetched"))
                 .catch((err) => {

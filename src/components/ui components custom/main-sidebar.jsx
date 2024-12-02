@@ -24,7 +24,7 @@ export function MainSidebar() {
 
     const handleLogout = () => {
         localStorage.removeItem("token");
-        router.push("/login"); // Redirect to home or login page after logout
+        router.push("/login");
     }
 
     return (
@@ -32,10 +32,10 @@ export function MainSidebar() {
             <SidebarHeader className="border-b p-4">
                 <div className="flex items-center gap-3">
                     <Avatar>
-                        <AvatarImage src="/placeholder.svg" />
-                        <AvatarFallback>HA</AvatarFallback>
+                        <AvatarImage src="/image.png" />
+                        <AvatarFallback>MM</AvatarFallback>
                     </Avatar>
-                    <span className="font-semibold">Hamza Ahmed</span>
+                    <span className="font-semibold">MergeMate</span>
                 </div>
             </SidebarHeader>
             <SidebarContent>
@@ -53,7 +53,7 @@ export function MainSidebar() {
                     <SidebarMenuItem>
                         <SidebarMenuButton asChild>
                             <button onClick={handleLogout} className="flex items-center gap-2">
-                                <LogOut className="h-4 w-4" /> {/* Changed icon to LogOut */}
+                                <LogOut className="h-4 w-4" />
                                 <span>Logout</span>
                             </button>
                         </SidebarMenuButton>

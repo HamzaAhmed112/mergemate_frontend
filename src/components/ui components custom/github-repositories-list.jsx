@@ -14,10 +14,6 @@ export function GitHubRepositories({ repositories }) {
                             <div>
                                 <h3 className="font-semibold">{repoName}</h3>
                             </div>
-                            <div className="flex items-center gap-2">
-                                <Badge variant="outline">JavaScript</Badge> {/* Assuming language */}
-                                <span className="text-sm">⭐ 0</span> {/* Placeholder for stars */}
-                            </div>
                         </li>
                     ))}
                 </ul>
