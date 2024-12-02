@@ -52,8 +52,14 @@ export default function ExplorePage() {
     }, []);
 
     console.log(projects)
-    if (projects && token) {
+    if (projects && projects.length > 0 && token) {
         return <Explore token={token} projects={projects} />;
+    } else if (projects && projects.length === 0 && token) {
+        return (
+            <div>
+                No project available currently
+            </div>
+        )
     } else {
         return <Loading />;
     }
